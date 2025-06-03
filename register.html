@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>会員登録</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main style="text-align:center; padding: 40px;">
+    <h2>会員登録</h2>
+
+    <form id="register-form" style="max-width: 400px; margin: auto; text-align: left;">
+      <label for="role">あなたはどちらですか？</label>
+      <select id="role" required>
+        <option value="">選択してください</option>
+        <option value="student">👩‍🎓 学生</option>
+        <option value="company">🏢 企業</option>
+      </select>
+
+      <label for="name">名前 または 企業名</label>
+      <input type="text" id="name" required />
+
+      <label for="password">パスワード</label>
+      <input type="password" id="password" required />
+
+      <button type="submit" class="btn" style="width: 100%;">登録する</button>
+    </form>
+
+    <p style="margin-top: 20px;">すでに登録済みですか？ <a href="select-role.html">ログインへ</a></p>
+  </main>
+
+  <script>
+    document.getElementById("register-form").addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      const role = document.getElementById("role").value;
+      const name = document.getElementById("name").value.trim();
+      const password = document.getElementById("password").value;
+
+      if (!role || !name || !password) {
+        alert("すべての項目を入力してください。");
+        return;
+      }
+
+      const users = JSON.parse(localStorage.getItem("users") || "[]");
+
+      if (users.find(u => u.name === name)) {
+        alert("この名前はすでに登録されています。");
+        return;
+      }
+
+      users.push({ role, name, password });
+      localStorage.setItem("users", JSON.stringify(users));
+
+      alert("登録が完了しました。ログインしてください。");
+      window.location.href = "select-role.html";
+    });
+  </script>
+</body>
+</html>

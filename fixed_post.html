@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>プロジェクト投稿</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>プロジェクト投稿</h1>
+    <nav>
+<div id="user-info" class="user-info-bar"></div>
+
+      <a href="index.html">ホーム</a>
+      <a href="projects.html">プロジェクト一覧</a>
+      <a href="post.html">プロジェクト投稿</a>
+      <a href="my-projects.html">自分のプロジェクト</a>
+      <a href="#" id="change-role-link">ログアウト</a>
+    </nav>
+  </header>
+
+  <main>
+    <form id="post-form">
+      <label for="title">タイトル</label>
+      <input type="text" name="title" required />
+
+      <label for="description">概要</label>
+      <textarea name="description" rows="5" required></textarea>
+
+      <label for="industry">業界</label>
+      <select name="industry" required></select>
+
+      <label for="category">プロジェクトの内容</label>
+      <select name="category" required>
+        <option value="">選択してください</option>
+        <option value="SDGs">SDGs</option>
+        <option value="ビジコン系">ビジコン系</option>
+        <option value="イベント">イベント</option>
+        <option value="企業との共同プロジェクト">企業との共同プロジェクト</option>
+      </select>
+
+      <label for="organization">企業名／団体名</label>
+      <input type="text" name="organization" placeholder="例：株式会社〇〇" required />
+
+      <label for="duration-start">活動期間（開始日）</label>
+      <input type="date" name="duration-start" required />
+
+      <label for="duration-end">活動期間（終了日）</label>
+      <input type="date" name="duration-end" required />
+
+      <label for="term_label">活動時期・期間の目安</label>
+      <select name="term_label" required>
+        <option value="">選択してください</option>
+        <option value="春休み">春休み</option>
+        <option value="夏休み">夏休み</option>
+        <option value="通年">通年</option>
+        <option value="短期（1ヶ月以内）">短期（1ヶ月以内）</option>
+        <option value="中期（1〜3ヶ月）">中期（1〜3ヶ月）</option>
+        <option value="長期（3ヶ月以上）">長期（3ヶ月以上）</option>
+      </select>
+
+      <label for="contact">連絡先（任意）</label>
+      <input type="text" name="contact" placeholder="メールアドレスやSNSなど" />
+
+      <label for="skills">スキル要件</label>
+      <textarea name="skills" rows="3" placeholder="必要なスキルや条件などを自由に入力してください"></textarea>
+
+      <label for="members">募集人数</label>
+      <input type="number" name="members" min="1" required />
+
+      <button type="submit">投稿する</button>
+    </form>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

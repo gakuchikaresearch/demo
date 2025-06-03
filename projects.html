@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>プロジェクト一覧</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>プロジェクト一覧</h1>
+    <nav>
+      <div id="user-info" class="user-info-bar"></div>
+      <a href="index.html">ホーム</a>
+      <a href="projects.html">プロジェクト一覧</a>
+      <a href="post.html" id="post-link">プロジェクト投稿</a>
+      <a href="my-projects.html">自分のプロジェクト</a>
+      <a href="#" id="change-role-link">ログアウト</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="filter-section">
+      <div style="margin-bottom: 12px;">
+        <label for="industry-filter">業界:</label>
+        <select id="industry-filter"></select>
+
+        <label for="category-filter">内容:</label>
+        <select id="category-filter">
+          <option value="">すべて</option>
+          <option value="SDGs">SDGs</option>
+          <option value="ビジコン系">ビジコン系</option>
+          <option value="イベント">イベント</option>
+          <option value="企業との共同プロジェクト">企業との共同プロジェクト</option>
+        </select>
+
+        <label for="organization-filter">企業名・団体名:</label>
+        <input type="text" id="organization-filter" placeholder="例: 株式会社〇〇" />
+
+        <label for="start-date-filter">開始日:</label>
+        <input type="date" id="start-date-filter" />
+
+        <label for="end-date-filter">終了日:</label>
+        <input type="date" id="end-date-filter" />
+
+        <label for="term-filter">期間の目安:</label>
+        <select id="term-filter">
+          <option value="">すべて</option>
+          <option value="春休み">春休み</option>
+          <option value="夏休み">夏休み</option>
+          <option value="通年">通年</option>
+          <option value="短期（1ヶ月以内）">短期（1ヶ月以内）</option>
+          <option value="中期（1〜3ヶ月）">中期（1〜3ヶ月）</option>
+          <option value="長期（3ヶ月以上）">長期（3ヶ月以上）</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="title-filter">タイトル:</label>
+        <input type="text" id="title-filter" placeholder="例: インターン, 起業, AI など" />
+
+        <label for="skill-filter">スキル要件:</label>
+        <input type="text" id="skill-filter" placeholder="例: Python, デザイン, 営業 など" />
+      </div>
+
+      <button id="search-button">検索</button>
+    </section>
+
+    <section id="project-list" class="project-grid"></section>
+  </main>
+
+  <script>
+   // ✅ ログインチェック
+    document.addEventListener("DOMContentLoaded", () => {
+      const role = localStorage.getItem("userRole");
+      const name = localStorage.getItem("userName");
+
+      if (!role || !name) {
+        alert("ログインが必要です。");
+        window.location.href = "select-role.html";
+        return;
+      }
+
+      const roleLabel = role === "student" ? "👩‍🎓 学生" : "🏢 企業";
+      const userInfo = document.getElementById("user-info");
+      if (userInfo) {
+        userInfo.textContent = `${roleLabel}としてログイン中：${name}`;
+      }
+
+      // ✅ ログアウト機能
+      const logoutLink = document.getElementById("change-role-link");
+      if (logoutLink) {
+        logoutLink.addEventListener("click", (e) => {
+          e.preventDefault();
+          if (confirm("ログアウトしますか？")) {
+            localStorage.removeItem("userRole");
+            localStorage.removeItem("userName");
+            window.location.href = "select-role.html";
+          }
+        });
+      }
+    });
+ // ✅ プロジェクト一覧フィルタリング
+    document.addEventListener("DOMContentLoaded", () => {
+      const list = document.getElementById("project-list");
+      const categoryFilter = document.getElementById("category-filter");
+      const industryFilter = document.getElementById("industry-filter");
+      const termFilter = document.getElementById("term-filter");
+      const orgFilter = document.getElementById("organization-filter");
+      const titleFilter = document.getElementById("title-filter");
+      const skillFilter = document.getElementById("skill-filter");
+      const startDateFilter = document.getElementById("start-date-filter");
+      const endDateFilter = document.getElementById("end-date-filter");
+      const searchBtn = document.getElementById("search-button");
+
+      function renderProjects(projects) {
+        list.innerHTML = "";
+
+        if (projects.length === 0) {
+          list.innerHTML = `
+            <div class="empty-message">
+              <p>条件に一致するプロジェクトはありません。</p>
+            </div>`;
+          return;
+        }
+
+        projects.forEach(project => {
+          const card = document.createElement("div");
+          card.className = "project";
+          card.innerHTML = `
+            <h3>${project.title}</h3>
+            <p>${project.description}</p>
+            <p><strong>業界:</strong> ${project.industry}</p>
+            <p><strong>内容:</strong> ${project.category}</p>
+            <p><strong>企業名:</strong> ${project.organization}</p>
+            <a href="detail.html?id=${project.id}" class="view-btn">詳細を見る</a>
+          `;
+          list.appendChild(card);
+        });
+      }
+
+      function filterProjects() {
+        const allProjects = JSON.parse(localStorage.getItem("projects") || "[]");
+
+        const category = categoryFilter.value;
+        const industry = industryFilter.value;
+        const term = termFilter.value;
+        const org = orgFilter.value.trim();
+        const title = titleFilter.value.trim();
+        const skill = skillFilter.value.trim();
+        const startDate = startDateFilter.value;
+        const endDate = endDateFilter.value;
+
+        const filtered = allProjects.filter(p => {
+          const [start, end] = (p.duration || "〜").split("〜").map(d => new Date(d));
+          return (!category || p.category === category) &&
+                 (!industry || p.industry === industry) &&
+                 (!term || p.term_label === term) &&
+                 (!org || p.organization.includes(org)) &&
+                 (!title || p.title.includes(title)) &&
+                 (!skill || (p.skills && p.skills.includes(skill))) &&
+                 (!startDate || start >= new Date(startDate)) &&
+                 (!endDate || end <= new Date(endDate));
+        });
+
+        renderProjects(filtered);
+      }
+
+      searchBtn.addEventListener("click", filterProjects);
+
+      // 初回表示：全プロジェクト表示
+      renderProjects(JSON.parse(localStorage.getItem("projects") || "[]"));
+    });
+  </script>
+
+  <script src="script.js"></script>
+</body>
+</html>

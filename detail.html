@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>プロジェクト詳細</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>プロジェクト詳細</h1>
+    <nav>
+<div id="user-info" class="user-info-bar"></div>
+
+      <a href="index.html">ホーム</a>
+      <a href="projects.html">プロジェクト一覧</a>
+      <a href="post.html" id="post-link">プロジェクト投稿</a>
+      <a href="my-projects.html">自分のプロジェクト</a>
+      <a href="#" id="change-role-link">ログアウト</a>
+    </nav>
+  </header>
+
+  <main>
+    <div id="project-detail" class="project-detail">
+      <!-- JavaScriptで内容を挿入 -->
+    </div>
+  </main>
+
+ <script src="script.js"></script>
+  <script>
+       document.addEventListener("DOMContentLoaded", () => {
+      const role = localStorage.getItem("userRole");
+      const userName = localStorage.getItem("userName");
+
+      if (!role || !userName) {
+        alert("ログインが必要です。");
+        window.location.href = "select-role.html";
+        return;
+      }
+
+      const roleLabel = role === "student" ? "👩‍🎓 学生" : "🏢 企業";
+      const userInfo = document.getElementById("user-info");
+      if (userInfo) {
+        userInfo.textContent = `${roleLabel}としてログイン中：${userName}`;
+      }
+
+      const logoutLink = document.getElementById("change-role-link");
+      if (logoutLink) {
+        logoutLink.addEventListener("click", (e) => {
+          e.preventDefault();
+          if (confirm("ログアウトしますか？")) {
+            localStorage.removeItem("userRole");
+            localStorage.removeItem("userName");
+            window.location.href = "select-role.html";
+          }
+        });
+      }
+      const params = new URLSearchParams(window.location.search);
+      const id = params.get("id");
+      const projects = JSON.parse(localStorage.getItem("projects") || "[]");
+      const project = projects.find(p => p.id === id);
+
+      const container = document.getElementById("project-detail");
+      if (!project) {
+        container.innerHTML = "<p>プロジェクトが見つかりませんでした。</p>";
+        return;
+      }
+
+      const role = localStorage.getItem("userRole");
+      const userName = localStorage.getItem("userName");
+      const favorites = JSON.parse(localStorage.getItem(`favorites_${userName}`) || "[]");
+      const isFavorite = favorites.includes(project.id);
+
+      const favoriteBtn = (role === "student") ? `
+        <button id="favorite-btn" class="favorite-btn ${isFavorite ? "added" : ""}" data-id="${project.id}">
+          ${isFavorite ? "★ お気に入り解除" : "☆ お気に入り追加"}
+        </button>` : "";
+
+      container.innerHTML = `
+        <h2>${project.title}</h2>
+        <p><span class="label">概要:</span> ${project.description}</p>
+        <p><span class="label">業界:</span> ${project.industry}</p>
+        <p><span class="label">内容:</span> ${project.category}</p>
+        <p><span class="label">企業名:</span> ${project.organization}</p>
+        <p><span class="label">作成者:</span> ${project.author}</p>
+        <p><span class="label">期間:</span> ${project.duration}</p>
+        <p><span class="label">期間の目安:</span> ${project.term_label}</p>
+        <p><span class="label">スキル要件:</span> ${project.skills || "特になし"}</p>
+        <p><span class="label">募集人数:</span> ${project.members}</p>
+        <p><span class="label">連絡先:</span> ${project.contact || "未記入"}</p>
+        ${favoriteBtn}
+      `;
+
+      const favBtn = document.getElementById("favorite-btn");
+      if (favBtn) {
+        favBtn.addEventListener("click", () => {
+          let favs = JSON.parse(localStorage.getItem(`favorites_${userName}`) || "[]");
+          const isRemoving = favs.includes(id);
+
+          if (isRemoving) {
+            favs = favs.filter(pid => pid !== id);
+          } else {
+            favs.push(id);
+          }
+
+          localStorage.setItem(`favorites_${userName}`, JSON.stringify(favs));
+
+          favBtn.classList.toggle("added", !isRemoving);
+          favBtn.textContent = isRemoving ? "☆ お気に入り追加" : "★ お気に入り解除";
+        });
+      }
+    });
+  </script>
+  <script src="script.js"></script>
+</body>
+</html>

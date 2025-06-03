@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ログイン</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main style="text-align:center; padding: 40px;">
+    <h2>ログイン</h2>
+
+    <form id="login-form" style="max-width: 400px; margin: auto; text-align: left;">
+      <label for="name">名前 または 企業名</label>
+      <input type="text" id="name" required />
+
+      <label for="password">パスワード</label>
+      <input type="password" id="password" required />
+
+      <button type="submit" class="btn" style="width: 100%;">ログイン</button>
+    </form>
+
+    <p style="margin-top: 20px;">アカウントをお持ちでない方は <a href="register.html">会員登録</a></p>
+  </main>
+
+  <script>
+    document.getElementById("login-form").addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      const name = document.getElementById("name").value.trim();
+      const password = document.getElementById("password").value;
+
+      const users = JSON.parse(localStorage.getItem("users") || "[]");
+      const user = users.find(u => u.name === name && u.password === password);
+
+      if (!user) {
+        alert("名前またはパスワードが間違っています。");
+        return;
+      }
+
+      localStorage.setItem("userRole", user.role);
+      localStorage.setItem("userName", user.name);
+
+      alert("ログインしました！");
+      window.location.href = "index.html";
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>自社の投稿プロジェクト</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>自社の投稿プロジェクト</h1>
+    <nav>
+<div id="user-info" class="user-info-bar"></div>
+
+      <a href="index.html">ホーム</a>
+      <a href="projects.html">プロジェクト一覧</a>
+      <a href="post.html" id="post-link">プロジェクト投稿</a>
+      <a href="company-projects.html">自分のプロジェクト</a>
+      <a href="#" id="change-role-link">ログアウト</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="user-intro">
+      <h2>ようこそ、あなたが投稿したプロジェクト一覧へ</h2>
+      <p>ここでは、自社が投稿したプロジェクトを確認・編集・削除できます。</p>
+    </section>
+
+    <section class="user-stats">
+      <p>📌 投稿したプロジェクト数：<span id="project-count">0</span></p>
+      <p>🕒 最終投稿日：<span id="last-post-date">--</span></p>
+    </section>
+
+    <section id="my-projects-list" class="project-grid"></section>
+  </main>
+
+  <script src="script.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const role = localStorage.getItem("userRole");
+      const name = localStorage.getItem("userName");
+
+      if (!role || !name || role !== "company") {
+        alert("このページには企業のみアクセスできます。");
+        window.location.href = "select-role.html";
+        return;
+      }
+
+      const userInfo = document.getElementById("user-info");
+      if (userInfo) {
+        userInfo.textContent = `🏢 企業としてログイン中：${name}`;
+      }
+
+      const logoutLink = document.getElementById("change-role-link");
+      if (logoutLink) {
+        logoutLink.addEventListener("click", (e) => {
+          e.preventDefault();
+          if (confirm("ログアウトしますか？")) {
+            localStorage.removeItem("userRole");
+            localStorage.removeItem("userName");
+            window.location.href = "select-role.html";
+          }
+        });
+      }
+
+      const list = document.getElementById("my-projects-list");
+      const count = document.getElementById("project-count");
+      const lastDate = document.getElementById("last-post-date");
+
+      const userName = localStorage.getItem("userName");
+      let projects = JSON.parse(localStorage.getItem("projects") || "[]");
+      const myProjects = projects.filter(p => p.author === userName);
+
+      count.textContent = myProjects.length;
+      if (myProjects.length > 0) {
+        const dates = myProjects.map(p => new Date(parseInt(p.id)));
+        const latest = new Date(Math.max(...dates));
+        lastDate.textContent = latest.toLocaleDateString();
+      }
+
+      if (myProjects.length === 0) {
+        list.innerHTML = `
+          <div class="empty-message">
+            <img src="https://cdn-icons-png.flaticon.com/512/4076/4076503.png" alt="No Projects">
+            <p>まだ投稿したプロジェクトはありません。</p>
+          </div>`;
+        return;
+      }
+
+    myProjects.forEach(project => {
+      const div = document.createElement("div");
+      div.className = "project-card";
+      div.innerHTML = `
+        <h3>${project.title}</h3>
+        <p>${project.description}</p>
+        <p><strong>業界:</strong> ${project.industry}</p>
+        <p><strong>内容:</strong> ${project.category}</p>
+        <p><strong>期間:</strong> ${project.duration}</p>
+        <p><strong>企業名:</strong> ${project.organization}</p>
+        <a href="detail.html?id=${project.id}" class="btn">詳細を見る</a>
+        <a href="detail.html?edit=${project.id}" class="btn">編集</a>
+        <button class="delete-btn" data-id="${project.id}">削除</button>
+      `;
+      list.appendChild(div);
+    });
+
+    list.addEventListener("click", function (e) {
+      if (e.target.classList.contains("delete-btn")) {
+        const id = e.target.getAttribute("data-id");
+        if (confirm("本当に削除しますか？")) {
+          let projects = JSON.parse(localStorage.getItem("projects") || "[]");
+          projects = projects.filter(p => p.id !== id);
+          localStorage.setItem("projects", JSON.stringify(projects));
+          location.reload();
+        }
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

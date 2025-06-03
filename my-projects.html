@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>マイプロジェクト</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>マイプロジェクト</h1>
+    <nav>
+<div id="user-info" class="user-info-bar"></div>
+
+      <a href="index.html">ホーム</a>
+      <a href="projects.html">プロジェクト一覧</a>
+      <a href="post.html" id="post-link">プロジェクト投稿</a>
+      <a href="my-projects.html">自分のプロジェクト</a>
+      <a href="#" id="change-role-link">ログアウト</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="user-intro">
+      <h2>ようこそ、あなたのお気に入りプロジェクト一覧へ</h2>
+      <p>ここでは、お気に入り登録したプロジェクトを確認できます。</p>
+    </section>
+
+    <section class="user-stats">
+      <p>📌 合計プロジェクト数：<span id="project-count">0</span></p>
+      <p>🕒 最終投稿日：<span id="last-post-date">--</span></p>
+    </section>
+
+    <section id="my-projects-list" class="project-grid">
+         </section>
+  </main>
+  <script src="script.js"></script>
+  <script>
+ document.addEventListener("DOMContentLoaded", () => {
+      const role = localStorage.getItem("userRole");
+      const name = localStorage.getItem("userName");
+
+      if (!role || !name || role !== "student") {
+        alert("このページには学生のみアクセスできます。");
+        window.location.href = "select-role.html";
+        return;
+      }
+
+      const userInfo = document.getElementById("user-info");
+      if (userInfo) {
+        userInfo.textContent = `👩‍🎓 学生としてログイン中：${name}`;
+      }
+
+      const logoutLink = document.getElementById("change-role-link");
+      if (logoutLink) {
+        logoutLink.addEventListener("click", (e) => {
+          e.preventDefault();
+          if (confirm("ログアウトしますか？")) {
+            localStorage.removeItem("userRole");
+            localStorage.removeItem("userName");
+            window.location.href = "select-role.html";
+          }
+        });
+      }
+
+      loadFavoriteProjects();
+    });
+    enforceLogin('student'); // 学生のみアクセス可
+
+    function loadFavoriteProjects() {
+      const list = document.getElementById("my-projects-list");
+      const count = document.getElementById("project-count");
+      const lastDate = document.getElementById("last-post-date");
+
+      const userName = localStorage.getItem("userName");
+      const favorites = JSON.parse(localStorage.getItem(`favorites_${userName}`) || "[]");
+      const allProjects = JSON.parse(localStorage.getItem("projects") || "[]");
+
+      const favoriteProjects = allProjects.filter(p => favorites.includes(String(p.id)));
+
+      count.textContent = favoriteProjects.length;
+      if (favoriteProjects.length > 0) {
+        const dates = favoriteProjects.map(p => new Date(parseInt(p.id)));
+        const latest = new Date(Math.max(...dates));
+        lastDate.textContent = latest.toLocaleDateString();
+      }
+
+      list.innerHTML = "";
+
+      if (favoriteProjects.length === 0) {
+        list.innerHTML = `
+          <div class="empty-message">
+            <img src="https://cdn-icons-png.flaticon.com/512/4076/4076503.png" alt="No Favorites">
+            <p>お気に入り登録したプロジェクトはありません。</p>
+          </div>`;
+        return;
+      }
+
+      favoriteProjects.forEach(project => {
+        const card = renderSimpleProjectCard(project);
+        list.appendChild(card);
+      });
+
+      list.addEventListener("click", function (e) {
+        if (e.target.classList.contains("favorite-btn")) {
+          const id = e.target.getAttribute("data-id");
+          const userName = localStorage.getItem("userName");
+          const key = `favorites_${userName}`;
+          let favorites = JSON.parse(localStorage.getItem(key) || "[]");
+          const isRemoving = favorites.includes(id);
+
+          if (isRemoving) {
+            favorites = favorites.filter(pid => pid !== id);
+          } else {
+            favorites.push(id);
+          }
+          localStorage.setItem(key, JSON.stringify(favorites));
+
+          e.target.classList.toggle("added", !isRemoving);
+          e.target.textContent = isRemoving ? "☆ お気に入り追加" : "★ お気に入り解除";
+
+          renderProjects();
+        }
+      });
+    }
+
+    document.addEventListener("DOMContentLoaded", loadFavoriteProjects);
+  </script>
+
+  <script src="script.js"></script>
+</body>
+</html>

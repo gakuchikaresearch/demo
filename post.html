@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>プロジェクト投稿・編集</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="script.js" defer></script>
+</head>
+<body>
+ <header>
+  <h1>プロジェクト投稿</h1>
+  <div id="user-info" class="user-info-bar"></div>
+  <nav id="nav-bar">
+    <a href="index.html">ホーム</a>
+    <a href="projects.html">プロジェクト一覧</a>
+    <a href="post.html">プロジェクト投稿</a>
+    <a href="my-projects.html">自分のプロジェクト</a>
+    <a href="#" id="change-role-link">ログアウト</a>
+  </nav>
+</header>
+
+  <main>
+    <form id="post-form">
+      <label for="title">タイトル</label>
+      <input type="text" name="title" required />
+
+      <label for="description">概要</label>
+      <textarea name="description" rows="5" required></textarea>
+
+      <label for="industry">業界</label>
+      <select name="industry" id="industry" required></select>
+
+      <label for="category">プロジェクトの内容</label>
+      <select name="category" id="category" required></select>
+
+      <label for="organization">企業名／団体名</label>
+      <input type="text" name="organization" required />
+
+      <label for="duration-start">活動期間（開始日）</label>
+      <input type="date" name="duration-start" required />
+
+      <label for="duration-end">活動期間（終了日）</label>
+      <input type="date" name="duration-end" required />
+
+      <label for="term_label">活動時期・期間の目安</label>
+      <select name="term_label" required>
+        <option value="">選択してください</option>
+        <option value="春休み">春休み</option>
+        <option value="夏休み">夏休み</option>
+        <option value="通年">通年</option>
+        <option value="短期（1ヶ月以内）">短期（1ヶ月以内）</option>
+        <option value="中期（1〜3ヶ月）">中期（1〜3ヶ月）</option>
+        <option value="長期（3ヶ月以上）">長期（3ヶ月以上）</option>
+      </select>
+
+      <label for="contact">連絡先（任意）</label>
+      <input type="text" name="contact" placeholder="メールアドレスやSNSなど" />
+
+      <label for="skills">スキル要件</label>
+      <textarea name="skills" rows="3" placeholder="必要なスキルや条件などを自由に入力してください"></textarea>
+
+      <label for="members">募集人数</label>
+      <input type="number" name="members" min="1" required />
+
+      <button type="submit">保存する</button>
+    </form>
+  </main>
+ <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const role = localStorage.getItem("userRole");
+      const name = localStorage.getItem("userName");
+
+      if (!role || !name) {
+        alert("ログインが必要です。");
+        window.location.href = "select-role.html";
+        return;
+      }
+
+      const roleLabel = role === "student" ? "👩‍🎓 学生" : "🏢 企業";
+      const userInfo = document.getElementById("user-info");
+      if (userInfo) {
+        userInfo.textContent = `${roleLabel}としてログイン中：${name}`;
+      }
+
+      // 学生は投稿機能を非表示に（ナビゲーション）
+      const postNav = document.querySelector('a[href="post.html"]');
+      if (role === "student" && postNav) {
+        postNav.style.display = "none";
+      }
+
+      // ログアウト機能
+      const logoutLink = document.getElementById("change-role-link");
+      if (logoutLink) {
+        logoutLink.addEventListener("click", (e) => {
+          e.preventDefault();
+          if (confirm("ログアウトしますか？")) {
+            localStorage.removeItem("userRole");
+            localStorage.removeItem("userName");
+            window.location.href = "select-role.html";
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>

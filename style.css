@@ -1,0 +1,380 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap');
+
+body {
+  font-family: 'Noto Sans JP', sans-serif;
+  margin: 0;
+  background-color: #f4f6fa;
+  color: #333;
+}
+
+header {
+  background: linear-gradient(90deg, #0077cc, #00aacc);
+  color: white;
+  padding: 24px 0;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+header h1 {
+  margin: 0;
+  font-size: 24px;
+}
+
+nav {
+  margin-top: 10px;
+}
+
+nav a {
+  color: white;
+  margin: 0 12px;
+  text-decoration: none;
+  font-size: 16px;
+  padding: 6px 12px;
+  border-radius: 4px;
+  transition: background 0.3s;
+}
+
+nav a:hover {
+  background-color: rgba(255,255,255,0.2);
+}
+
+main {
+  max-width: 960px;
+  margin: 30px auto;
+  padding: 0 16px;
+}
+
+h2 {
+  font-size: 22px;
+  margin-top: 0;
+  color: #0077cc;
+}
+
+.btn {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 12px 24px;
+  background: #00a86b;
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: bold;
+  transition: background 0.3s, transform 0.2s;
+}
+
+.btn:hover {
+  background: #008c5f;
+  transform: translateY(-2px);
+}
+
+form {
+  margin-top: 20px;
+  padding: 24px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+form label {
+  display: block;
+  margin-top: 16px;
+  font-weight: 600;
+}
+
+form input,
+form select,
+form textarea {
+  width: 100%;
+  padding: 12px;
+  margin-top: 6px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-sizing: border-box;
+  font-size: 16px;
+}
+
+form button {
+  margin-top: 24px;
+  background: #0077cc;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  font-size: 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+form button:hover {
+  background: #005ea3;
+}
+
+.filter-section {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+#project-list.project-grid,
+#my-projects-list.project-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.project {
+  background: white;
+  border-radius: 10px;
+  padding: 18px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.project:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+}
+
+.project h3 {
+  margin-top: 0;
+  font-size: 20px;
+  color: #0077cc;
+}
+
+.project-meta {
+  font-size: 14px;
+  color: #777;
+  margin-bottom: 10px;
+}
+
+.project-description {
+  font-size: 15px;
+  color: #444;
+  margin-bottom: 12px;
+}
+
+.project-detail p {
+  margin: 8px 0;
+}
+
+.project .view-btn {
+  background-color: #0077cc;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.project .view-btn:hover {
+  background-color: #005fa3;
+}
+
+.delete-btn {
+  margin-top: 10px;
+  padding: 6px 12px;
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.delete-btn:hover {
+  background-color: #c0392b;
+}
+
+/* 自己紹介セクション */
+.user-intro,
+.user-stats {
+  background: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.user-stats span {
+  font-weight: bold;
+  color: #0077cc;
+}
+
+/* 👇 追加：プロジェクトが空のときの表示 */
+.empty-message {
+  text-align: center;
+  padding: 40px 20px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  margin-top: 40px;
+}
+
+.empty-message img {
+  width: 200px;
+  max-width: 100%;
+  margin-bottom: 20px;
+  opacity: 0.8;
+}
+
+.empty-message p {
+  font-size: 18px;
+  color: #555;
+}
+
+@media screen and (max-width: 600px) {
+  header h1 {
+    font-size: 20px;
+  }
+
+  nav {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  nav a {
+    margin: 6px 0;
+    font-size: 14px;
+    padding: 8px;
+    display: block;
+    width: 100%;
+    text-align: center;
+  }
+
+  .btn {
+    width: 100%;
+    font-size: 16px;
+  }
+
+  form, .user-intro, .user-stats, .project {
+    padding: 16px;
+    font-size: 16px;
+  }
+
+  .project-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .project h3 {
+    font-size: 18px;
+  }
+
+  .project-description {
+    font-size: 14px;
+  }
+
+  .delete-btn, .view-btn {
+    width: 100%;
+    margin-top: 10px;
+    font-size: 16px;
+  }
+
+  .empty-message img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  main {
+    padding: 0 10px;
+  }
+}
+
+.project-detail {
+  background: white;
+  padding: 24px;
+  margin: 30px auto;
+  border-radius: 10px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  max-width: 700px;
+  line-height: 1.8;
+}
+
+.project-detail h2 {
+  font-size: 24px;
+  color: #0077cc;
+  margin-bottom: 16px;
+}
+
+.project-detail .label {
+  display: inline-block;
+  font-weight: bold;
+  color: #333;
+  min-width: 100px;
+}
+
+.project-detail .value {
+  display: inline-block;
+  color: #444;
+}
+
+.project-detail p {
+  margin: 12px 0;
+}
+
+@media screen and (max-width: 600px) {
+  .project-detail {
+    padding: 16px;
+    font-size: 16px;
+  }
+
+  .project-detail h2 {
+    font-size: 20px;
+  }
+
+  .project-detail .label {
+    min-width: 80px;
+  }
+}
+
+body {
+  overflow-x: hidden;
+}
+
+nav a.active {
+  background-color: rgba(255, 255, 255, 0.4);
+  font-weight: bold;
+}
+
+.favorite-btn {
+  background-color: #eee;
+  border: none;
+  border-radius: 4px;
+  padding: 6px 10px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  font-size: 14px;
+}
+
+.favorite-btn.added {
+  background-color: gold;
+  color: white;
+  font-weight: bold;
+  transform: scale(1.1);
+}
+
+.favorite-btn {
+  background-color: #eee;
+  border: none;
+  border-radius: 4px;
+  padding: 6px 10px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  font-size: 14px;
+}
+
+.favorite-btn.added {
+  background-color: gold;
+  color: white;
+  font-weight: bold;
+  transform: scale(1.1);
+}
+
+.user-info-bar {
+  text-align: right;
+  font-size: 14px;
+  color: #fff;
+  padding: 4px 16px;
+  background-color: #0077cc;
+}
+
+
